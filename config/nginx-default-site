@@ -53,11 +53,11 @@ server {
 	}
 
 	## Lokobold config. Text RPG soon
-	location = /lokobolder { rewrite ^ /yourapplication/; }
+	location = /lokobolder { rewrite ^ /lokobolder/; }
 	location /lokobolder { try_files $uri @lokobolder; }
 	location @lokobolder {
 		root /var/www/lokobolder/html/;
-
+	
 		include uwsgi_params;
 		uwsgi_pass unix:/tmp/lokobolder.sock;
 	}
@@ -100,4 +100,3 @@ server {
 #		try_files $uri $uri/ =404;
 #	}
 #}
-
