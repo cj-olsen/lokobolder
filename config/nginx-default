@@ -41,7 +41,7 @@ server {
 	root /var/www;
 
 	# Add index.php to the list if you are using PHP
-	index index.html index.htm index.nginx-debian.html;
+	index index.php index.html index.htm index.nginx-debian.html;
 
 	server_name _;
 
@@ -52,26 +52,15 @@ server {
 		try_files $uri $uri/ =404;
 	}
 
-	## Lokobold config. Text RPG soon
+	## Lokobolder
 	location = /lokobolder { rewrite ^ /lokobolder/; }
 	location /lokobolder { try_files $uri @lokobolder; }
 	location @lokobolder {
 		root /var/www/lokobolder/html/;
-	
+		
 		include uwsgi_params;
 		uwsgi_pass unix:/tmp/lokobolder.sock;
 	}
-
-	# pass PHP scripts to FastCGI server
-	#
-	#location ~ \.php$ {
-	#	include snippets/fastcgi-php.conf;
-	#
-	#	# With php-fpm (or other unix sockets):
-	#	fastcgi_pass unix:/run/php/php7.3-fpm.sock;
-	#	# With php-cgi (or other tcp sockets):
-	#	fastcgi_pass 127.0.0.1:9000;
-	#}
 
 	# deny access to .htaccess files, if Apache's document root
 	# concurs with nginx's one
@@ -79,6 +68,8 @@ server {
 	#location ~ /\.ht {
 	#	deny all;
 	#}
+
+	include /etc/nginx/sites-available/mediawiki;
 }
 
 
