@@ -1,0 +1,37 @@
+# Modified from https://www.nginx.com/resources/wiki/start/topics/recipes/mediawiki/
+
+location = /wiki { return 301 /wiki/Main_Page; }
+location /wiki { try_files $uri @mediawiki; }
+
+location @mediawiki {
+	root /var/www/wiki/;
+	rewrite ^/wiki/(?<pagename>.*)$ /mediawiki/index.php;
+}
+
+# Pass PHP scripts to FastCGI server
+location ~ \.php$ {
+	include snippets/fastcgi-php.conf;
+	include fastcgi_params;
+	fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+}
+
+location ~* ^/mediawiki/(.*)\.(js|css|png|jpg|jpeg|gif|ico)$ {
+	try_files $uri /mediawiki/index.php;
+	expires max;
+	log_not_found off;	
+}
+
+location /mediawiki/_.gif {
+	expires max;
+	log_not_found off;
+}
+
+location ^~ mediawiki/cache/ {
+	deny all;
+}
+
+location /mediawiki/dumps {
+	root /var/www/mediawiki/local;
+	autoindex on;
+}

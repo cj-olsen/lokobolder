@@ -17,15 +17,27 @@
 ##
 
 # Default server configuration
-#
+
+
+# Redirect all HTTP traffic to HTTPS.
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 
-	# SSL configuration
-	#
-	# listen 443 ssl default_server;
-	# listen [::]:443 ssl default_server;
+	server_name lokobolder.com;
+
+	return 301 https://$host$request_uri;
+}
+
+server {
+	## SSL configuration
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+
+	ssl_certificate /etc/letsencrypt/live/lokobolder.com/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/lokobolder.com/privkey.pem;
+
+	include /etc/letsencrypt/options-ssl-nginx.conf;
 	#
 	# Note: You should disable gzip for SSL traffic.
 	# See: https://bugs.debian.org/773332
@@ -43,7 +55,7 @@ server {
 	# Add index.php to the list if you are using PHP
 	index index.html index.htm index.nginx-debian.html;
 
-	server_name _;
+	server_name lokobolder.com;
 
 	location / {
 		root ./html;
@@ -52,26 +64,18 @@ server {
 		try_files $uri $uri/ =404;
 	}
 
-	## Lokobold config. Text RPG soon
-	location = /lokobolder { rewrite ^ /yourapplication/; }
+	## Lokobolder
+	location = /play { rewrite ^ /play/; }
+	location /play { try_files $uri @lokobolder; }
+	# Assets
+	location = /lokobolder { rewrite ^ /lokobolder/; }
 	location /lokobolder { try_files $uri @lokobolder; }
 	location @lokobolder {
 		root /var/www/lokobolder/html/;
-
+		
 		include uwsgi_params;
 		uwsgi_pass unix:/tmp/lokobolder.sock;
 	}
-
-	# pass PHP scripts to FastCGI server
-	#
-	#location ~ \.php$ {
-	#	include snippets/fastcgi-php.conf;
-	#
-	#	# With php-fpm (or other unix sockets):
-	#	fastcgi_pass unix:/run/php/php7.3-fpm.sock;
-	#	# With php-cgi (or other tcp sockets):
-	#	fastcgi_pass 127.0.0.1:9000;
-	#}
 
 	# deny access to .htaccess files, if Apache's document root
 	# concurs with nginx's one
@@ -79,6 +83,8 @@ server {
 	#location ~ /\.ht {
 	#	deny all;
 	#}
+
+	include /etc/nginx/sites-available/mediawiki;
 }
 
 
@@ -100,4 +106,3 @@ server {
 #		try_files $uri $uri/ =404;
 #	}
 #}
-
