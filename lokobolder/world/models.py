@@ -1,5 +1,3 @@
-from enum import Enum
-
 from lokobolder.database import db
 
 CONST_CHUNK_WIDTH = 128
