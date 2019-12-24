@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>This is a test!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+    <body>
+        <h1>Lokobolder</h1>
+        <a href="{{url_for('main.about')}}">
+            About
+        </a>
+
+        <main id="content"></main>
+    </body>
+
+    <script src="{{url_for('static', filename='js/dist/index.js')}}"></script>
+</html>

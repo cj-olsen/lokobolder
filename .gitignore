@@ -130,3 +130,7 @@ dmypy.json
 
 # Bin folders
 bin/
+
+
+# Node modules
+node_modules/
