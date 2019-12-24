@@ -1,1 +1,3 @@
-from lokobolder import app as application
+from lokobolder import create_app
+
+application = create_app()
