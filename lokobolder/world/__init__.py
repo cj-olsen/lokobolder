@@ -12,4 +12,7 @@ def get_by_coordinates(x, y):
     # To-do: Query database for the correct chunk
 
     # To-do: Return jsonified chunk data
-    return jsonify([])
+    smallworld = [["DOOM","desert","forest"],
+                  ["town","lake","tundra"],
+                  ["shipyards","boneyards","gokart tracks"]]
+    return jsonify(smallworld[x][y])
