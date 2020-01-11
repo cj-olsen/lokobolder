@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify
+from lokobolder.database import db
 
 from .models import WorldChunk
 
@@ -11,4 +12,6 @@ def get_by_coordinates(x, y):
     smallworld = [["DOOM","Desert","Forest"],
                   ["Town","Lake","Tundra"],
                   ["Shipyards","Boneyards","Gokart Tracks"]]
-    return jsonify(smallworld[x][y])
+    db.create_all()
+    db.session.add(WorldChunk(x=0,y=0,data="some useless rocks"))
+    return jsonify(WorldChunk.query.filter_by(x=x,y=y).first().data)
